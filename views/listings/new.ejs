@@ -1,0 +1,149 @@
+<% layout("listings/layouts/boilerplate") %>
+
+<body class="bg-light">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+
+        <!-- Card -->
+        <div class="card shadow border-0 rounded-4" style="max-height: 85vh; overflow-y: auto;">
+          <div class="card-body p-3">
+
+            <!-- Title -->
+            <h2 class="text-center mb-3 fw-bold text-danger fs-4">
+              Create a New Listing
+            </h2>
+
+            <!-- Form -->
+            <form method="POST" action="/listings" enctype="multipart/form-data" class="needs-validation" novalidate>
+
+              <!-- Title -->
+              <div class="mb-2">
+                <label for="title" class="form-label fw-semibold small">Title</label>
+                <input 
+                  name="listing[title]" 
+                  id="title"
+                  placeholder="Enter title" 
+                  type="text" 
+                  class="form-control form-control-sm rounded-3"
+                />
+              </div>
+
+              <!-- Description -->
+              <div class="mb-2">
+                <label for="description" class="form-label fw-semibold small">Description</label>
+                <textarea
+                  name="listing[description]"
+                  id="description"
+                  placeholder="Enter description"
+                  class="form-control form-control-sm rounded-3"
+                  rows="2"
+                ></textarea>
+              </div>
+
+              <!-- Image Upload -->
+              <div class="mb-2">
+                <label for="imageFile" class="form-label fw-semibold small">Upload Image</label>
+                <input
+                  name="listing[image]"
+                  id="imageFile"
+                  type="file"
+                  class="form-control form-control-sm rounded-3"
+                  accept="image/*"
+                  onchange="previewImage(event)"
+                />
+                <img id="imagePreview" src="#" alt="Image Preview" class="img-fluid mt-2 rounded-3" style="display:none; max-height:200px;" />
+              </div>
+
+              <!-- Price -->
+              <div class="mb-2">
+                <label for="price" class="form-label fw-semibold small">Price</label>
+                <input
+                  name="listing[price]"
+                  id="price"
+                  placeholder="Enter price"
+                  type="number" 
+                  class="form-control form-control-sm rounded-3"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+
+              <!-- Country & Location -->
+              <div class="row mb-2">
+                <div class="col-md-6 mb-2">
+                  <label for="country" class="form-label fw-semibold small">Country</label>
+                  <input
+                    name="listing[country]"
+                    id="country"
+                    placeholder="Enter country"
+                    type="text" 
+                    class="form-control form-control-sm rounded-3"
+                  />
+                </div>
+
+                <div class="col-md-6 mb-2">
+                  <label for="location" class="form-label fw-semibold small">Location</label>
+                  <input
+                    name="listing[location]"
+                    id="location"
+                    placeholder="Enter location"
+                    type="text" 
+                    class="form-control form-control-sm rounded-3"
+                  />
+                </div>
+              </div>
+
+              <!-- Button -->
+              <div class="d-grid">
+                <button 
+                  type="submit"
+                  class="btn btn-sm text-white fw-semibold rounded-3"
+                  style="background-color: #fe424d;"
+                >
+                  + Add Listing
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function previewImage(event) {
+      const input = event.target;
+      const preview = document.getElementById('imagePreview');
+      if(input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        preview.src = '#';
+        preview.style.display = 'none';
+      }
+    }
+  </script>
+
+  <style>
+    .card:hover {
+      transform: scale(1.01);
+    }
+    .hover-scale:hover {
+      transform: scale(1.05);
+    }
+    .card::-webkit-scrollbar {
+      width: 6px;
+    }
+    .card::-webkit-scrollbar-thumb {
+      background-color: rgba(0,0,0,0.2);
+      border-radius: 3px;
+    }
+  </style>
+</body>

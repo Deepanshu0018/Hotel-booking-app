@@ -1,0 +1,155 @@
+<% layout("listings/layouts/boilerplate") %>
+
+<!-- Filters Row -->
+<div class="filters mb-4 mt-3 d-flex flex-wrap align-items-center justify-content-between">
+
+  <!-- Left Filters -->
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    <div class="d-flex align-items-center filter px-3 py-2">
+      <i class="fa-solid fa-fire me-1 filter-icon"></i> Trending
+    </div>
+    <div class="d-flex align-items-center filter px-3 py-2">
+      <i class="fa-solid fa-bed me-1 filter-icon"></i> Beds
+    </div>
+    <div class="d-flex align-items-center filter px-3 py-2">
+      <i class="fa-solid fa-mountain-sun me-1 filter-icon"></i> Mountains
+    </div>
+    <div class="d-flex align-items-center filter px-3 py-2">
+      <i class="fa-solid fa-chess-rook me-1 filter-icon"></i> Castle
+    </div>
+    <div class="d-flex align-items-center filter px-3 py-2">
+      <i class="fa-solid fa-person-swimming me-1 filter-icon"></i> Swimming
+    </div>
+    <div class="d-flex align-items-center filter px-3 py-2">
+      <i class="fa-solid fa-tractor me-1 filter-icon"></i> Tractor
+    </div>
+    <div class="d-flex align-items-center filter px-3 py-2">
+      <i class="fa-solid fa-campground me-1 filter-icon"></i> Camping
+    </div>
+    <div class="d-flex align-items-center filter px-3 py-2">
+      <i class="fa-solid fa-person-hiking me-1 filter-icon"></i> Hiking
+    </div>
+    <div class="d-flex align-items-center filter px-3 py-2">
+      <i class="fa-solid fa-umbrella-beach me-1 filter-icon"></i> Beach
+    </div>
+  </div>
+
+  <!-- Right Tax Toggle as filter-style pill -->
+  <div class="d-flex align-items-center toggle-filter px-3 py-2 ms-auto">
+    <input class="form-check-input me-2" type="checkbox" id="taxToggle">
+    <label class="mb-0" for="taxToggle">
+      Include Tax
+    </label>
+  </div>
+
+</div>
+
+<!-- Listings Row -->
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+  <% for (let listing of listings) { %>
+    <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none">
+      <div class="card col mb-4 shadow-sm listing-card">
+        <img 
+          src="<%= listing.image.url %>" 
+          class="card-img-top" 
+          alt="listing_image" 
+        />
+        <div class="card-body">
+          <p class="card-text mb-0">
+            <b><%= listing.title %></b> <br/>
+            &#8377;<%= listing.price.toLocaleString("en-IN") %> / night
+          </p>
+        </div>
+      </div>
+    </a>
+  <% } %>
+</div>
+
+<!-- Custom Styles -->
+<style>
+  /* Filter icons smaller */
+  .filter-icon {
+    font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+
+  /* Airbnb-like hover effect for filters */
+  .filters .filter {
+    background-color: #f8f8f8;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .filters .filter:hover {
+    color: #ff385c;
+    transform: scale(1.05);
+    background-color: #ffe6eb;
+  }
+
+  /* Toggle filter pill */
+  .toggle-filter {
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #f8f8f8;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .toggle-filter:hover {
+    border-color: #ff385c;
+    background-color: #ffe6eb;
+  }
+
+  .form-check-input {
+    cursor: pointer;
+  }
+
+  /* Listing card hover effect */
+  .listing-card img {
+    height: 20rem;
+    object-fit: cover;
+    transition: transform 0.2s;
+  }
+
+  .listing-link:hover .listing-card img {
+    transform: scale(1.03);
+  }
+
+  .listing-card {
+    transition: transform 0.2s;
+  }
+
+  .listing-link:hover .listing-card {
+    transform: scale(1.02);
+  }
+
+  /* Responsive adjustments */
+  @media(max-width: 768px) {
+    .filters {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .toggle-filter {
+      margin-left: 0;
+    }
+  }
+</style>
+
+<!-- JS to handle toggle -->
+<script>
+  const taxToggle = document.getElementById("taxToggle");
+  taxToggle.addEventListener("change", () => {
+    if(taxToggle.checked) {
+      console.log("Taxes included");
+      // TODO: Update listing prices dynamically
+    } else {
+      console.log("Taxes excluded");
+    }
+  });
+</script>
