@@ -2,20 +2,18 @@
 
 <div class="row mt-3">
   <div class="col-lg-8 offset-lg-2">
-
     <!-- ==================== Title ==================== -->
     <h3 class="mb-3 text-center"><%= listing.title %></h3>
 
     <!-- ==================== Listing Card ==================== -->
     <div class="card shadow-sm rounded-3 mb-4">
-      
       <!-- Listing Image -->
-      <img 
-        src="<%= listing.image.url %>" 
-        class="card-img-top" 
-        alt="listing_image" 
-        style="object-fit: cover; height: 350px;"
-      >
+      <img
+        src="<%= listing.image.url %>"
+        class="card-img-top"
+        alt="listing_image"
+        style="object-fit: cover; height: 350px"
+      />
 
       <!-- Listing Details -->
       <div class="card-body">
@@ -28,7 +26,9 @@
         <p class="card-text mb-2"><%= listing.description %></p>
 
         <!-- Price -->
-        <p class="mb-1"><b>&#8377;<%= listing.price.toLocaleString("en-IN") %></b></p>
+        <p class="mb-1">
+          <b>&#8377;<%= listing.price.toLocaleString("en-IN") %></b>
+        </p>
 
         <!-- Location -->
         <p class="mb-1"><%= listing.location %></p>
@@ -39,116 +39,150 @@
 
       <!-- Action Buttons (Only if current user is the owner) -->
       <% if (currentUser && listing.owner._id.equals(currentUser._id)) { %>
-        <div class="card-footer bg-white border-top-0">
-          <!-- Edit Button -->
-          <a class="btn btn-danger w-100 mb-2" href="/listings/<%= listing._id %>/edit">
-            Edit this Listing
-          </a>
+      <div class="card-footer bg-white border-top-0">
+        <!-- Edit Button -->
+        <a
+          class="btn btn-danger w-100 mb-2"
+          href="/listings/<%= listing._id %>/edit"
+        >
+          Edit this Listing
+        </a>
 
-          <!-- Delete Form -->
-          <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
-            <button class="btn btn-dark w-100">Delete this listing</button>
-          </form>
-        </div>
+        <!-- Delete Form -->
+        <form
+          method="POST"
+          action="/listings/<%= listing._id %>?_method=DELETE"
+        >
+          <button class="btn btn-dark w-100">Delete this listing</button>
+        </form>
+      </div>
       <% } %>
     </div>
 
     <!-- ==================== Review Section ==================== -->
     <div class="review-section mt-4">
-      <hr/>
+      <hr />
       <h4 class="mb-3">Leave a Review</h4>
 
-      <% if (currentUser) { %>
-        <% if (!listing.owner._id.equals(currentUser._id)) { %>
-          
-          <!-- Review Form (Only for logged in users, not the owner) -->
-          <form action="/listings/<%= listing.id %>/reviews" method="POST" novalidate class="needs-validation">
-            
-            <!-- Rating (Star system) -->
-            <fieldset class="starability-slot mb-3">
-              <legend>Rating:</legend>
-              <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
-              <input type="radio" id="rate1" name="review[rating]" value="1" />
-              <label for="rate1" title="Terrible">1 star</label>
-              <input type="radio" id="rate2" name="review[rating]" value="2" />
-              <label for="rate2" title="Not good">2 stars</label>
-              <input type="radio" id="rate3" name="review[rating]" value="3" />
-              <label for="rate3" title="Average">3 stars</label>
-              <input type="radio" id="rate4" name="review[rating]" value="4" />
-              <label for="rate4" title="Very good">4 stars</label>
-              <input type="radio" id="rate5" name="review[rating]" value="5" />
-              <label for="rate5" title="Amazing">5 stars</label>
-            </fieldset>
+      <% if (currentUser) { %> <% if
+      (!listing.owner._id.equals(currentUser._id)) { %>
 
-            <!-- Comment Box -->
-            <div class="mb-3">
-              <label for="comment" class="form-label">Comments</label>
-              <textarea name="review[comment]" id="comment" class="form-control" rows="4" required></textarea>
-              <div class="invalid-feedback">Please add some comments for reviews</div>
-            </div>
+      <!-- Review Form (Only for logged in users, not the owner) -->
+      <form
+        action="/listings/<%= listing.id %>/reviews"
+        method="POST"
+        novalidate
+        class="needs-validation"
+      >
+        <!-- Rating (Star system) -->
+        <fieldset class="starability-slot mb-3">
+          <legend>Rating:</legend>
+          <input
+            type="radio"
+            id="no-rate"
+            class="input-no-rate"
+            name="review[rating]"
+            value="0"
+            checked
+            aria-label="No rating."
+          />
+          <input type="radio" id="rate1" name="review[rating]" value="1" />
+          <label for="rate1" title="Terrible">1 star</label>
+          <input type="radio" id="rate2" name="review[rating]" value="2" />
+          <label for="rate2" title="Not good">2 stars</label>
+          <input type="radio" id="rate3" name="review[rating]" value="3" />
+          <label for="rate3" title="Average">3 stars</label>
+          <input type="radio" id="rate4" name="review[rating]" value="4" />
+          <label for="rate4" title="Very good">4 stars</label>
+          <input type="radio" id="rate5" name="review[rating]" value="5" />
+          <label for="rate5" title="Amazing">5 stars</label>
+        </fieldset>
 
-            <!-- Submit Button -->
-            <button class="btn btn-primary w-100">Submit</button>
-          </form>
-
-        <% } else { %>
-          <!-- Message: Owner cannot review their own listing -->
-          <div class="alert alert-secondary mt-3" role="alert">
-            You cannot review your own listing.
+        <!-- Comment Box -->
+        <div class="mb-3">
+          <label for="comment" class="form-label">Comments</label>
+          <textarea
+            name="review[comment]"
+            id="comment"
+            class="form-control"
+            rows="4"
+            required
+          ></textarea>
+          <div class="invalid-feedback">
+            Please add some comments for reviews
           </div>
-        <% } %>
-      <% } else { %>
-        <!-- Message: User must log in -->
-        <div class="alert alert-warning mt-3" role="alert">
-          You must <a href="/login" class="alert-link">log in</a> to leave a review.
         </div>
+
+        <!-- Submit Button -->
+        <button class="btn btn-primary w-100">Submit</button>
+      </form>
+
+      <% } else { %>
+      <!-- Message: Owner cannot review their own listing -->
+      <div class="alert alert-secondary mt-3" role="alert">
+        You cannot review your own listing.
+      </div>
+      <% } %> <% } else { %>
+      <!-- Message: User must log in -->
+      <div class="alert alert-warning mt-3" role="alert">
+        You must <a href="/login" class="alert-link">log in</a> to leave a
+        review.
+      </div>
       <% } %>
     </div>
 
     <!-- ==================== Show Reviews ==================== -->
-    <hr/>
+    <hr />
     <h4 class="mt-4">All Reviews</h4>
 
     <% if (listing.reviews && listing.reviews.length > 0) { %>
-      <div class="row">
-        <% listing.reviews.forEach(function(review) { %>
-          <div class="col-md-8 offset-md-2">
-            <div class="card mb-3 shadow-sm border-0 rounded-3">
-              <div class="card-body d-flex justify-content-between align-items-start">
-                
-                <!-- Review Content -->
-                <div>
-                  <!-- Starability Result: shows exact rating from DB -->
-                  <p class="starability-result" data-rating="<%= review.rating %>">
-                    Rated: <%= review.rating %> stars
-                  </p>
+    <div class="row">
+      <% listing.reviews.forEach(function(review) { %>
+      <div class="col-md-8 offset-md-2">
+        <div class="card mb-3 shadow-sm border-0 rounded-3">
+          <div
+            class="card-body d-flex justify-content-between align-items-start"
+          >
+            <!-- Review Content -->
+            <div>
+              <!-- Starability Result: shows exact rating from DB -->
+              <p class="starability-result" data-rating="<%= review.rating %>">
+                Rated: <%= review.rating %> stars
+              </p>
 
-                  <!-- Comment -->
-                  <p class="card-text mb-1"><%= review.comment %></p>
+              <!-- Comment -->
+              <p class="card-text mb-1"><%= review.comment %></p>
 
-                  <!-- Author -->
-                  <small class="text-muted">
-                    — Posted by <b><%= review.author ? review.author.username : "Anonymous" %></b>
-                  </small>
-                </div>
-
-                <!-- Delete Review Button (only for review author) -->
-                <% if (currentUser && review.author && review.author._id.equals(currentUser._id)) { %>
-                  <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
-                    <button class="btn btn-sm btn-outline-dark">Delete</button>
-                  </form>
-                <% } %>
-              </div>
+              <!-- Author -->
+              <small class="text-muted">
+                — Posted by
+                <b
+                  ><%= review.author ? review.author.username : "Anonymous"
+                  %></b
+                >
+              </small>
             </div>
-          </div>
-        <% }) %>
-      </div>
-    <% } else { %>
-      <!-- Message: No reviews yet -->
-      <div class="alert alert-info mt-3" role="alert">
-        No reviews yet. Be the first to leave one!
-      </div>
-    <% } %>
 
+            <!-- Delete Review Button (only for review author) -->
+            <% if (currentUser && review.author &&
+            review.author._id.equals(currentUser._id)) { %>
+            <form
+              method="POST"
+              action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
+            >
+              <button class="btn btn-sm btn-outline-dark">Delete</button>
+            </form>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+    <% } else { %>
+    <!-- Message: No reviews yet -->
+    <div class="alert alert-info mt-3" role="alert">
+      No reviews yet. Be the first to leave one!
+    </div>
+    <% } %>
   </div>
-</div> //this is mmy show.ejs fix this and throw me the whole code 
+</div>

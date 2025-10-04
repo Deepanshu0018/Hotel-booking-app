@@ -1,4 +1,6 @@
-<nav class="navbar navbar-expand-md navbar-light bg-light border-bottom shadow-sm sticky-top">
+<nav
+  class="navbar navbar-expand-md navbar-light bg-light border-bottom shadow-sm sticky-top"
+>
   <div class="container-fluid">
     <!-- Brand -->
     <a class="navbar-brand fw-bold text-primary" href="/listings">
@@ -6,14 +8,15 @@
     </a>
 
     <!-- Mobile Toggler -->
-    <button 
-      class="navbar-toggler" 
-      type="button" 
-      data-bs-toggle="collapse" 
-      data-bs-target="#navbarNavAltMarkup" 
-      aria-controls="navbarNavAltMarkup" 
-      aria-expanded="false" 
-      aria-label="Toggle navigation">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -25,28 +28,41 @@
       </div>
 
       <!-- Center Search Box -->
-      <div class="d-flex mx-auto my-2 my-md-0" style="width: 320px; position: relative;">
-        <form class="w-100" action="/listings/search" method="GET" style="position: relative;">
-          <input 
-            class="form-control search-input"  
-            type="search" 
-            placeholder="Search listings..." 
-            name="q" 
-            aria-label="Search">
+      <div
+        class="d-flex mx-auto my-2 my-md-0"
+        style="width: 320px; position: relative"
+      >
+        <form
+          class="w-100"
+          action="/listings/search"
+          method="GET"
+          style="position: relative"
+        >
+          <input
+            class="form-control search-input"
+            type="search"
+            placeholder="Search listings..."
+            name="q"
+            aria-label="Search"
+          />
           <i class="fa-solid fa-magnifying-glass search-icon"></i>
         </form>
       </div>
 
       <!-- Right-side Links -->
       <div class="navbar-nav ms-auto align-items-center">
-        <a class="btn btn-airbnb fw-bold rounded me-3" href="/listings/new">Airbnb your home</a>
+        <a class="btn btn-airbnb fw-bold rounded me-3" href="/listings/new"
+          >Airbnb your home</a
+        >
 
         <% if (!currentUser) { %>
-          <a class="nav-link fw-bold text-dark me-3" href="/signup">Sign Up</a>
-          <a class="nav-link fw-bold text-dark me-3" href="/login">Login</a>
+        <a class="nav-link fw-bold text-dark me-3" href="/signup">Sign Up</a>
+        <a class="nav-link fw-bold text-dark me-3" href="/login">Login</a>
         <% } else { %>
-          <span class="nav-link disabled me-3">Hi, <%= currentUser.username %></span>
-          <a class="nav-link text-danger me-3" href="/logout">Logout</a>
+        <span class="nav-link disabled me-3"
+          >Hi, <%= currentUser.username %></span
+        >
+        <a class="nav-link text-danger me-3" href="/logout">Logout</a>
         <% } %>
       </div>
     </div>
@@ -82,14 +98,14 @@
     border-radius: 50px;
     border: 1px solid #ddd;
     height: 40px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
   }
 
   .search-input:focus {
     outline: none;
     border-color: #ff385c;
-    box-shadow: 0 4px 12px rgba(255,56,92,0.2);
+    box-shadow: 0 4px 12px rgba(255, 56, 92, 0.2);
   }
 
   .search-icon {
@@ -103,7 +119,7 @@
   }
 
   /* Responsive adjustments */
-  @media(max-width: 768px) {
+  @media (max-width: 768px) {
     .d-flex.mx-auto {
       width: 100%;
       justify-content: center;

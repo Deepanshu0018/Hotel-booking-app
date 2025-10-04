@@ -1,32 +1,54 @@
+require("dotenv").config({ path: "../.env" }); // points to root .env from init folder
+
 const mongoose = require("mongoose");
 const initData = require("./data.js");
 const Listing = require("../models/listing.js");
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+// ✅ Use Atlas URL from .env
+const MONGO_URL = process.env.ATLASDB_URL;
+console.log("Mongo URL:", MONGO_URL); // should print the full Atlas URL
 
-main()
-  .then(() => {
-    console.log("✅ Connected to DB");
-  })
-  .catch((err) => {
-    console.log("❌ DB Connection Error:", err);
-  });
-
+// Connect to MongoDB Atlas
 async function main() {
-  await mongoose.connect(MONGO_URL);
+  try {
+    await mongoose.connect(MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("✅ Connected to MongoDB Atlas");
+
+    // Seed database after connection
+    await initDB();
+
+    // Close connection
+    mongoose.connection.close();
+    console.log("🔒 Connection closed");
+  } catch (err) {
+    console.error("❌ DB Connection Error:", err);
+    process.exit(1);
+  }
 }
 
+// Seed the database
 const initDB = async () => {
-  await Listing.deleteMany({});
+  try {
+    // Remove existing listings
+    await Listing.deleteMany({});
+    console.log("🗑️ Old listings cleared");
 
-  // 👇 Add your fixed owner ID to each listing
-  const listingsWithOwner = initData.data.map((listing) => ({
-    ...listing,
-    owner: "68a6cefa435850412097c4e7" // ✅ Your user ObjectId
-  }));
+    // Add fixed owner ID to each listing
+    const listingsWithOwner = initData.data.map((listing) => ({
+      ...listing,
+      owner: "68e0e0ed8f58318211be18bc", // ✅ Replace with your actual user ObjectId
+    }));
 
-  await Listing.insertMany(listingsWithOwner);
-  console.log("🌱 Database seeded successfully with owner field");
+    // Insert seed data
+    await Listing.insertMany(listingsWithOwner);
+    console.log("🌱 Database seeded successfully with owner field");
+  } catch (err) {
+    console.error("❌ Error seeding database:", err);
+  }
 };
 
-initDB();
+// Run main
+main();

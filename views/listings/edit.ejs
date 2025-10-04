@@ -3,28 +3,68 @@
 <div class="row mt-3">
   <div class="col-8 offset-2">
     <h2>Edit your listing</h2>
-    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" enctype="multipart/form-data">
-
+    <form
+      method="POST"
+      action="/listings/<%= listing._id %>?_method=PUT"
+      enctype="multipart/form-data"
+    >
       <!-- Title -->
       <div class="mb-3">
         <label for="title" class="form-label">Enter Title</label>
-        <input name="title" value="<%= listing.title %>" type="text" class="form-control" required />
+        <input
+          name="listing[title]"
+          value="<%= listing.title %>"
+          type="text"
+          class="form-control"
+          required
+        />
       </div>
 
       <!-- Description -->
       <div class="mb-3">
         <label for="description" class="form-label">Description</label>
-        <input name="description" value="<%= listing.description %>" type="text" class="form-control" required />
+        <input
+          name="listing[description]"
+          value="<%= listing.description %>"
+          type="text"
+          class="form-control"
+          required
+        />
       </div>
 
       <!-- Image Upload -->
       <div class="mb-3">
         <label for="imageFile" class="form-label">Upload Image</label>
-        <input id="imageFile" name="image" type="file" class="form-control" accept="image/*" />
+        <input
+          id="imageFile"
+          name="image"
+          type="file"
+          class="form-control"
+          accept="image/*"
+        />
 
         <!-- Image Preview -->
         <div class="mt-2">
-          <img id="imagePreview" src="<%= listing.image.url %>" alt="Image Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px;" />
+          <% if(listing.image) { %>
+          <img
+            id="imagePreview"
+            src="<%= listing.image.url %>"
+            alt="Image Preview"
+            style="max-width: 100%; max-height: 300px; border-radius: 8px"
+          />
+          <% } else { %>
+          <img
+            id="imagePreview"
+            src=""
+            alt="Image Preview"
+            style="
+              max-width: 100%;
+              max-height: 300px;
+              border-radius: 8px;
+              display: none;
+            "
+          />
+          <% } %>
         </div>
       </div>
 
@@ -32,38 +72,62 @@
       <div class="row">
         <div class="mb-3 col-md-4">
           <label for="price" class="form-label">Price</label>
-          <input name="price" value="<%= listing.price %>" type="text" class="form-control" required />
+          <input
+            name="listing[price]"
+            value="<%= listing.price %>"
+            type="text"
+            class="form-control"
+            required
+          />
         </div>
         <div class="mb-3 col-md-8">
           <label for="country" class="form-label">Country</label>
-          <input name="country" value="<%= listing.country %>" type="text" class="form-control" required />
+          <input
+            name="listing[country]"
+            value="<%= listing.country %>"
+            type="text"
+            class="form-control"
+            required
+          />
         </div>
       </div>
 
       <!-- Location -->
       <div class="mb-3 col-md-8">
         <label for="location" class="form-label">Location</label>
-        <input name="location" value="<%= listing.location %>" type="text" class="form-control" required />
+        <input
+          name="listing[location]"
+          value="<%= listing.location %>"
+          type="text"
+          class="form-control"
+          required
+        />
       </div>
 
       <!-- Submit Button -->
-      <button style="background-color: #fe424d; border: none; margin: 0.5rem;" class="btn btn-dark edit-btn mt-2">Edit</button>
-
+      <button
+        type="submit"
+        style="background-color: #fe424d; border: none; margin: 0.5rem"
+        class="btn btn-dark edit-btn mt-2"
+      >
+        Edit Listing
+      </button>
     </form>
   </div>
 </div>
 
 <!-- ==================== Image Preview Script ==================== -->
 <script>
-  const imageFileInput = document.getElementById('imageFile');
-  const imagePreview = document.getElementById('imagePreview');
+  const imageFileInput = document.getElementById("imageFile");
+  const imagePreview = document.getElementById("imagePreview");
 
-  imageFileInput.addEventListener('change', () => {
+  imageFileInput.addEventListener("change", () => {
     const file = imageFileInput.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         imagePreview.src = e.target.result;
+        imagePreview.style.display = "block";
       };
       reader.readAsDataURL(file);
     }

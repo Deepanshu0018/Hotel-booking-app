@@ -14,7 +14,6 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const MongoStore = require("connect-mongo");
-const multer = require("multer");
 const kleur = require("kleur");
 
 // ======================= MODELS & UTILS =======================
@@ -26,12 +25,17 @@ const listingRouter = require("./routes/listings.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
+// ======================= CLOUDINARY =======================
+const multer = require("multer");
+const { cloudinary, storage } = require("./cloudconfig"); // <-- Cloudinary setup
+const upload = multer({ storage });
+
 // ======================= APP INIT =======================
 const app = express();
 
 // ======================= DATABASE CONNECTION =======================
-const dbUrl = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/wanderlust";
-
+const dbUrl =
+  process.env.ATLASDB_URL || "mongodb://localhost:27017/hotelBooking";
 async function connectDB() {
   try {
     await mongoose.connect(dbUrl);
@@ -42,7 +46,9 @@ async function connectDB() {
         kleur.white(" | ") +
         kleur.blue(new Date().toLocaleTimeString())
     );
-    console.log(kleur.cyan().bold("════════════════════════════════════════════════════"));
+    console.log(
+      kleur.cyan().bold("════════════════════════════════════════════════════")
+    );
   } catch (err) {
     console.error(kleur.red().bold(`❌💥 DB Connection Error: ${err.message}`));
   }
@@ -59,19 +65,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
-// ======================= MULTER CONFIG =======================
-// ⚠️ Temporary local storage (can switch to cloud later)
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, "public/uploads")),
-  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
-});
-const upload = multer({ storage });
-
 // ======================= SESSION & FLASH =======================
 const store = MongoStore.create({
   mongoUrl: dbUrl,
-  crypto: { secret: process.env.SESSION_SECRET},
-  touchAfter: 24 * 3600, // reduce writes
+  crypto: { secret: process.env.SESSION_SECRET },
+  touchAfter: 24 * 3600,
 });
 
 store.on("error", (err) => {
@@ -85,7 +83,7 @@ const sessionOptions = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000, // 1 week
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
   },
 };
@@ -109,6 +107,7 @@ app.use((req, res, next) => {
 });
 
 // ======================= ROUTES =======================
+// Pass `upload` to routes that need image uploads
 app.use("/", userRouter);
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
@@ -127,7 +126,9 @@ app.use((err, req, res, next) => {
 // ======================= SERVER =======================
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(kleur.cyan().bold("════════════════════════════════════════════════════"));
+  console.log(
+    kleur.cyan().bold("════════════════════════════════════════════════════")
+  );
   console.log(
     kleur.green().bold("⚡ Server Online") +
       kleur.white(" | ") +
