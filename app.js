@@ -108,7 +108,9 @@ app.use((req, res, next) => {
 
 // ======================= ROUTES =======================
 // Pass `upload` to routes that need image uploads
-app.use("/", userRouter);
+app.get("/", (req, res) => {
+  res.redirect("/listings"); //
+});
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 
