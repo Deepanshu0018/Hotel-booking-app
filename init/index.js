@@ -39,7 +39,7 @@ const initDB = async () => {
     // Add fixed owner ID to each listing
     const listingsWithOwner = initData.data.map((listing) => ({
       ...listing,
-      owner: "68e0e0ed8f58318211be18bc", // ✅ Replace with your actual user ObjectId
+      owner: "693d2788cc639b879bcfddac", // ✅ Replace with your actual user ObjectId
     }));
 
     // Insert seed data

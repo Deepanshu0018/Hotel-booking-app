@@ -27,7 +27,7 @@ const userRouter = require("./routes/user.js");
 
 // ======================= CLOUDINARY =======================
 const multer = require("multer");
-const { cloudinary, storage } = require("./cloudconfig"); // <-- Cloudinary setup
+const { cloudinary, storage } = require("./cloudconfig");
 const upload = multer({ storage });
 
 // ======================= APP INIT =======================
@@ -36,6 +36,7 @@ const app = express();
 // ======================= DATABASE CONNECTION =======================
 const dbUrl =
   process.env.ATLASDB_URL || "mongodb://localhost:27017/hotelBooking";
+
 async function connectDB() {
   try {
     await mongoose.connect(dbUrl);
@@ -94,6 +95,7 @@ app.use(flash());
 // ======================= PASSPORT CONFIG =======================
 app.use(passport.initialize());
 app.use(passport.session());
+
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -107,10 +109,15 @@ app.use((req, res, next) => {
 });
 
 // ======================= ROUTES =======================
-// Pass `upload` to routes that need image uploads
-app.use("/", userRouter);
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
+
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
+
+// ✅ FIX: AUTH ROUTES MOUNTED
+app.use("/", userRouter);
 
 // ======================= ERROR HANDLING =======================
 app.all("*", (req, res, next) => {
