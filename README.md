@@ -39,5 +39,5 @@ Users can explore hotels, register/login, and manage bookings with authenticatio
 
 ---
 
-## 📂 Project Structure
+
 
