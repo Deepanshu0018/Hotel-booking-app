@@ -5,6 +5,7 @@ const Review = require("./review");
 const listingSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
+
   image: {
     url: {
       type: String,
@@ -13,13 +14,33 @@ const listingSchema = new Schema({
     },
     filename: String,
   },
+
   price: { type: Number, required: true, min: 0 },
   country: { type: String, required: true },
   location: { type: String, required: true },
+
+  // ✅ SAFE ADDITION (does NOT break old data)
+  category: {
+    type: String,
+    enum: [
+      "trending",
+      "beds",
+      "mountains",
+      "castle",
+      "swimming",
+      "tractor",
+      "camping",
+      "hiking",
+      "beach",
+    ],
+    default: "trending",
+  },
+
   owner: { type: Schema.Types.ObjectId, ref: "User", required: true },
   reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
 });
 
+// ✅ KEEPING YOUR DELETE HOOK EXACTLY AS IS
 listingSchema.post("findOneAndDelete", async function (doc) {
   if (doc) {
     await Review.deleteMany({ _id: { $in: doc.reviews } });

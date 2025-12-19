@@ -1,115 +1,143 @@
 <% layout("listings/layouts/boilerplate") %>
 
-<!-- Filters Row -->
-<div class="filters mb-4 mt-3 d-flex flex-wrap align-items-center justify-content-between">
-
-  <!-- Left Filters -->
+<!-- ================= FILTERS ROW ================= -->
+<div
+  class="filters mb-4 mt-3 d-flex flex-wrap align-items-center justify-content-between"
+>
+  <!-- LEFT FILTERS -->
   <div class="d-flex flex-wrap align-items-center gap-2">
-    <div class="d-flex align-items-center filter px-3 py-2">
-      <i class="fa-solid fa-fire me-1 filter-icon"></i> Trending
-    </div>
-    <div class="d-flex align-items-center filter px-3 py-2">
-      <i class="fa-solid fa-bed me-1 filter-icon"></i> Beds
-    </div>
-    <div class="d-flex align-items-center filter px-3 py-2">
-      <i class="fa-solid fa-mountain-sun me-1 filter-icon"></i> Mountains
-    </div>
-    <div class="d-flex align-items-center filter px-3 py-2">
-      <i class="fa-solid fa-chess-rook me-1 filter-icon"></i> Castle
-    </div>
-    <div class="d-flex align-items-center filter px-3 py-2">
-      <i class="fa-solid fa-person-swimming me-1 filter-icon"></i> Swimming
-    </div>
-    <div class="d-flex align-items-center filter px-3 py-2">
-      <i class="fa-solid fa-tractor me-1 filter-icon"></i> Tractor
-    </div>
-    <div class="d-flex align-items-center filter px-3 py-2">
-      <i class="fa-solid fa-campground me-1 filter-icon"></i> Camping
-    </div>
-    <div class="d-flex align-items-center filter px-3 py-2">
-      <i class="fa-solid fa-person-hiking me-1 filter-icon"></i> Hiking
-    </div>
-    <div class="d-flex align-items-center filter px-3 py-2">
-      <i class="fa-solid fa-umbrella-beach me-1 filter-icon"></i> Beach
-    </div>
+    <% const filters = [ { key: "trending", icon: "fa-fire", label: "Trending"
+    }, { key: "beds", icon: "fa-bed", label: "Beds" }, { key: "mountains", icon:
+    "fa-mountain-sun", label: "Mountains" }, { key: "castle", icon:
+    "fa-chess-rook", label: "Castle" }, { key: "swimming", icon:
+    "fa-person-swimming", label: "Swimming" }, { key: "tractor", icon:
+    "fa-tractor", label: "Tractor" }, { key: "camping", icon: "fa-campground",
+    label: "Camping" }, { key: "hiking", icon: "fa-person-hiking", label:
+    "Hiking" }, { key: "beach", icon: "fa-umbrella-beach", label: "Beach" }, ];
+    %> <% for (let f of filters) { %>
+    <a
+      href="/listings?category=<%= f.key %><% if (minPrice) { %>&minPrice=<%= minPrice %><% } %><% if (maxPrice) { %>&maxPrice=<%= maxPrice %><% } %>"
+      class="d-flex align-items-center filter px-3 py-2 text-decoration-none <%= category === f.key ? 'active-filter' : '' %>"
+    >
+      <i class="fa-solid <%= f.icon %> me-1 filter-icon"></i>
+      <%= f.label %>
+    </a>
+    <% } %>
   </div>
 
-  <!-- Right Tax Toggle as filter-style pill -->
+  <!-- TAX TOGGLE -->
   <div class="d-flex align-items-center toggle-filter px-3 py-2 ms-auto">
-    <input class="form-check-input me-2" type="checkbox" id="taxToggle">
-    <label class="mb-0" for="taxToggle">
-      Include Tax
-    </label>
+    <input class="form-check-input me-2" type="checkbox" id="taxToggle" />
+    <label class="mb-0" for="taxToggle">Include Tax</label>
   </div>
-
 </div>
 
-<!-- Listings Row -->
+<!-- ================= PRICE SLIDER ================= -->
+<form action="/listings" method="GET" class="price-slider-form mb-4">
+  <% if (category) { %>
+  <input type="hidden" name="category" value="<%= category %>" />
+  <% } %>
+
+  <div class="slider-wrapper">
+    <label><b>Price Range</b></label>
+
+    <div class="price-values">
+      ₹<span id="minValue"><%= minPrice || 0 %></span> — ₹<span id="maxValue"
+        ><%= maxPrice || 10000 %></span
+      >
+    </div>
+
+    <input
+      type="range"
+      id="minPrice"
+      name="minPrice"
+      min="0"
+      max="10000"
+      step="500"
+      value="<%= minPrice || 0 %>"
+    />
+
+    <input
+      type="range"
+      id="maxPrice"
+      name="maxPrice"
+      min="0"
+      max="10000"
+      step="500"
+      value="<%= maxPrice || 10000 %>"
+    />
+  </div>
+
+  <button class="btn btn-sm btn-dark mt-2">Apply</button>
+</form>
+
+<!-- ================= LISTINGS ================= -->
 <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
   <% for (let listing of listings) { %>
-    <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none">
-      <div class="card col mb-4 shadow-sm listing-card">
-        <img 
-          src="<%= listing.image.url %>" 
-          class="card-img-top" 
-          alt="listing_image" 
-        />
-        <div class="card-body">
-          <p class="card-text mb-0">
-            <b><%= listing.title %></b> <br/>
-            &#8377;<%= listing.price.toLocaleString("en-IN") %> / night
-          </p>
-        </div>
+  <a
+    href="/listings/<%= listing._id %>"
+    class="listing-link text-decoration-none"
+  >
+    <div class="card col mb-4 shadow-sm listing-card">
+      <img
+        src="<%= listing.image.url %>"
+        class="card-img-top"
+        alt="listing_image"
+      />
+      <div class="card-body">
+        <p class="card-text mb-0">
+          <b><%= listing.title %></b><br />
+          <span class="listing-price" data-base-price="<%= listing.price %>">
+            &#8377;<%= listing.price.toLocaleString("en-IN") %>
+          </span>
+          / night
+        </p>
       </div>
-    </a>
+    </div>
+  </a>
   <% } %>
 </div>
 
-<!-- Custom Styles -->
+<!-- ================= STYLES ================= -->
 <style>
-  /* Filter icons smaller */
   .filter-icon {
     font-size: 0.8rem;
-    transition: all 0.2s;
   }
 
-  /* Airbnb-like hover effect for filters */
   .filters .filter {
-    background-color: #f8f8f8;
+    background: #f8f8f8;
     border-radius: 1rem;
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
+    color: inherit;
   }
 
-  .filters .filter:hover {
+  .filters .filter:hover,
+  .active-filter {
     color: #ff385c;
-    transform: scale(1.05);
     background-color: #ffe6eb;
+    transform: scale(1.05);
   }
 
-  /* Toggle filter pill */
   .toggle-filter {
     border: 1px solid #ccc;
     border-radius: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    background-color: #f8f8f8;
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
+    background: #f8f8f8;
   }
 
-  .toggle-filter:hover {
-    border-color: #ff385c;
-    background-color: #ffe6eb;
+  .price-slider-form {
+    max-width: 320px;
+  }
+  .slider-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .price-values {
+    font-weight: bold;
   }
 
-  .form-check-input {
-    cursor: pointer;
-  }
-
-  /* Listing card hover effect */
   .listing-card img {
     height: 20rem;
     object-fit: cover;
@@ -119,37 +147,49 @@
   .listing-link:hover .listing-card img {
     transform: scale(1.03);
   }
-
-  .listing-card {
-    transition: transform 0.2s;
-  }
-
-  .listing-link:hover .listing-card {
-    transform: scale(1.02);
-  }
-
-  /* Responsive adjustments */
-  @media(max-width: 768px) {
-    .filters {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-    .toggle-filter {
-      margin-left: 0;
-    }
-  }
 </style>
 
-<!-- JS to handle toggle -->
+<!-- ================= JS ================= -->
 <script>
-  const taxToggle = document.getElementById("taxToggle");
-  taxToggle.addEventListener("change", () => {
-    if(taxToggle.checked) {
-      console.log("Taxes included");
-      // TODO: Update listing prices dynamically
-    } else {
-      console.log("Taxes excluded");
+  // PRICE SLIDER
+  const minSlider = document.getElementById("minPrice");
+  const maxSlider = document.getElementById("maxPrice");
+  const minValue = document.getElementById("minValue");
+  const maxValue = document.getElementById("maxValue");
+
+  function updateSliderValues() {
+    if (+minSlider.value > +maxSlider.value) {
+      minSlider.value = maxSlider.value;
     }
+    minValue.textContent = minSlider.value;
+    maxValue.textContent = maxSlider.value;
+  }
+
+  minSlider.addEventListener("input", updateSliderValues);
+  maxSlider.addEventListener("input", updateSliderValues);
+
+  // INCLUDE TAX
+  const taxToggle = document.getElementById("taxToggle");
+  const TAX_RATE = 0.18; // 18%
+
+  const priceElements = document.querySelectorAll(".listing-price");
+
+  function updateTaxPrices(includeTax) {
+    priceElements.forEach((el) => {
+      const base = Number(el.dataset.basePrice);
+      const finalPrice = includeTax ? Math.round(base * (1 + TAX_RATE)) : base;
+
+      el.innerHTML = "&#8377;" + finalPrice.toLocaleString("en-IN");
+    });
+  }
+
+  // persist state
+  const savedTax = localStorage.getItem("includeTax") === "true";
+  taxToggle.checked = savedTax;
+  updateTaxPrices(savedTax);
+
+  taxToggle.addEventListener("change", () => {
+    localStorage.setItem("includeTax", taxToggle.checked);
+    updateTaxPrices(taxToggle.checked);
   });
 </script>

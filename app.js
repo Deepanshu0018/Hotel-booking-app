@@ -1,9 +1,10 @@
-// ======================= IMPORTS =======================
+// ======================= ENV =======================
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
-  console.log("✅ Loaded .env variables");
+  console.log("env loaded");
 }
 
+// ======================= IMPORTS =======================
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -14,16 +15,15 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const MongoStore = require("connect-mongo");
-const kleur = require("kleur");
 
 // ======================= MODELS & UTILS =======================
-const User = require("./models/user.js");
-const ExpressError = require("./utils/ExpressError.js");
+const User = require("./models/user");
+const ExpressError = require("./utils/ExpressError");
 
-// Routers
-const listingRouter = require("./routes/listings.js");
-const reviewRouter = require("./routes/review.js");
-const userRouter = require("./routes/user.js");
+// ======================= ROUTES =======================
+const listingRouter = require("./routes/listings");
+const reviewRouter = require("./routes/review");
+const userRouter = require("./routes/user");
 
 // ======================= CLOUDINARY =======================
 const multer = require("multer");
@@ -33,28 +33,14 @@ const upload = multer({ storage });
 // ======================= APP INIT =======================
 const app = express();
 
-// ======================= DATABASE CONNECTION =======================
+// ======================= DATABASE =======================
 const dbUrl =
   process.env.ATLASDB_URL || "mongodb://localhost:27017/hotelBooking";
 
-async function connectDB() {
-  try {
-    await mongoose.connect(dbUrl);
-    console.log(
-      kleur.green().bold("🗄️  Database Connected") +
-        kleur.white(" | ") +
-        kleur.magenta("MongoDB Online") +
-        kleur.white(" | ") +
-        kleur.blue(new Date().toLocaleTimeString())
-    );
-    console.log(
-      kleur.cyan().bold("════════════════════════════════════════════════════")
-    );
-  } catch (err) {
-    console.error(kleur.red().bold(`❌💥 DB Connection Error: ${err.message}`));
-  }
-}
-connectDB();
+mongoose
+  .connect(dbUrl)
+  .then(() => console.log("database connected"))
+  .catch((err) => console.error("database error:", err.message));
 
 // ======================= VIEW ENGINE =======================
 app.engine("ejs", ejsMate);
@@ -66,7 +52,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
-// ======================= SESSION & FLASH =======================
+// ======================= SESSION =======================
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   crypto: { secret: process.env.SESSION_SECRET },
@@ -74,25 +60,25 @@ const store = MongoStore.create({
 });
 
 store.on("error", (err) => {
-  console.log("❌ Error in MONGO SESSION store", err);
+  console.error("session store error:", err);
 });
 
-const sessionOptions = {
-  store,
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    httpOnly: true,
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  },
-};
+app.use(
+  session({
+    store,
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    },
+  })
+);
 
-app.use(session(sessionOptions));
 app.use(flash());
 
-// ======================= PASSPORT CONFIG =======================
+// ======================= PASSPORT =======================
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -115,33 +101,29 @@ app.get("/", (req, res) => {
 
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
-
-// ✅ FIX: AUTH ROUTES MOUNTED
 app.use("/", userRouter);
 
 // ======================= ERROR HANDLING =======================
 app.all("*", (req, res, next) => {
-  next(new ExpressError(404, "Page Not Found!"));
+  next(new ExpressError(404, "Page Not Found"));
 });
 
 app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
-  if (!err.message) err.message = "Oh No, Something Went Wrong!";
+  if (!err.message) err.message = "Something went wrong";
   res.status(statusCode).render("error.ejs", { err });
 });
 
 // ======================= SERVER =======================
 const PORT = process.env.PORT || 8080;
+const URL =
+  process.env.NODE_ENV === "production"
+    ? "https://your-domain.com"
+    : `http://localhost:${PORT}`;
+
 app.listen(PORT, () => {
-  console.log(
-    kleur.cyan().bold("════════════════════════════════════════════════════")
-  );
-  console.log(
-    kleur.green().bold("⚡ Server Online") +
-      kleur.white(" | ") +
-      kleur.magenta("Listening on Port ") +
-      kleur.yellow().bold(PORT) +
-      kleur.white(" | ") +
-      kleur.blue(new Date().toLocaleTimeString())
-  );
+  console.log("────────────────────────────────────");
+  console.log("🚀 Server running at:");
+  console.log(`👉 ${URL}`);
+  console.log("────────────────────────────────────");
 });

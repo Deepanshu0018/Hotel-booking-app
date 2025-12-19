@@ -7,11 +7,13 @@ module.exports.listingSchema = Joi.object({
   location: Joi.string().required(),
   country: Joi.string().required(),
   price: Joi.number().required().min(0),
-  image: Joi.string().allow("", null) // optional, can be empty
+  image: Joi.string().allow("", null),
 });
 
-// ================= Review Validation =================
+// ================= Review Validation (FIXED) =================
 module.exports.reviewsSchema = Joi.object({
-  rating: Joi.number().required().min(1).max(5),
-  comment: Joi.string().required()
+  review: Joi.object({
+    rating: Joi.number().min(1).max(5).required(),
+    comment: Joi.string().required(),
+  }).required(),
 });

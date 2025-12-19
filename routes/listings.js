@@ -8,7 +8,6 @@ const listingController = require("../controllers/listings");
 const { storage } = require("../cloudconfig");
 const upload = multer({ storage });
 
-// JOI validation schema
 const { listingSchema } = require("../schema.js");
 
 const validateListing = (req, res, next) => {
@@ -20,10 +19,9 @@ const validateListing = (req, res, next) => {
   next();
 };
 
-// Routes
 router
   .route("/")
-  .get(wrapAsync(listingController.index))
+  .get(wrapAsync(listingController.index)) // ✅ FILTER LOGIC IS HERE
   .post(
     isLoggedIn,
     upload.single("image"),
