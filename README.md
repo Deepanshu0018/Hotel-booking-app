@@ -1,7 +1,6 @@
-<<<<<<< HEAD
-# wanderlust
+
 =======
-# Hotel Booking App 🏨
+# Hotel Booking App 🏨 A AIRBNB CLONE
 
 A full-stack hotel booking web application inspired by Airbnb.
 
