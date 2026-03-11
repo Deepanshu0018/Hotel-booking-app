@@ -1,8 +1,8 @@
-# Hotel Booking App 🏨 A AIRBNB CLONE
+# Hotel Booking App  --A AIRBNB CLONE--
 
 A full-stack hotel booking web application inspired by Airbnb.
 
-## 🚀 Features
+## Features
 - Category-based filters (Beach, Mountains, Camping, etc.)
 - Price range slider
 - Include tax toggle with dynamic pricing
@@ -11,7 +11,7 @@ A full-stack hotel booking web application inspired by Airbnb.
 - Reviews and ratings
 - Image upload using Cloudinary
 
-## 🛠 Tech Stack
+##  Tech Stack
 - Node.js
 - Express.js
 - MongoDB & Mongoose
@@ -20,7 +20,7 @@ A full-stack hotel booking web application inspired by Airbnb.
 - Cloudinary
 - Passport.js
 
-## ⚙️ Setup Instructions
+##  Setup Instructions
 1. Clone the repository
 ```bash
 git clone https://github.com/Deepanshu0018/Hotel-booking-app.git
